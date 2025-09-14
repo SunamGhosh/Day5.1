@@ -55,7 +55,7 @@
 
       try {
         // Make API request to Gemini
-        const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAf091P03e_i8rGmLTiJn7AvhngkU0lfVo', {
+        const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=APIKEY', {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
