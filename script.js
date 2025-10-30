@@ -55,13 +55,12 @@
 
       try {
         // Make API request to Gemini
-        const response = await fetch('URL GOOGLE', {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: query }] }]
-          })
-        });
+        const response = await fetch('http://localhost:3000/ask', {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ query }),
+});
+
 
         // Simple Markdown-to-HTML converter
         function formatResponse(text) {
