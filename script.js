@@ -56,7 +56,7 @@ async function gemini(prompt) {
   responseContainer.classList.add('show');
 
   try {
-    const res = await fetch('https://chatbot-4ocx.onrender.com/gemini', {
+    const res = await fetch('https://chatbot-app-m8uw.onrender.com/gemini', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt })
