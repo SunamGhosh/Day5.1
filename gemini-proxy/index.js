@@ -30,7 +30,7 @@ app.post("/gemini", async (req, res) => {
     console.log("Calling Gemini API with key:", API_KEY ? "SET" : "MISSING");
     
     const apiResponse = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash-lite:generateContent?key=${API_KEY}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
