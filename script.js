@@ -55,7 +55,7 @@
 
       try {
         // Make API request to Gemini
-        const response = await fetch('http://localhost:3000/ask', {
+        const response = await fetch('https://chatbot-4ocx.onrender.com/ask', {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ query }),
