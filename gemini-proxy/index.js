@@ -15,6 +15,7 @@ if (!API_KEY) {
   process.exit(1);
 }
 
+// YOUR /gemini ROUTE
 app.post("/gemini", async (req, res) => {
   try {
     const { prompt } = req.body;
@@ -47,5 +48,18 @@ app.post("/gemini", async (req, res) => {
   }
 });
 
+// ADD THE /ping ROUTE HERE (after /gemini, before app.listen)
+app.get("/ping", (req, res) => {
+  res.json({ status: "alive", time: new Date().toISOString() });
+});
+
+// Optional: Add a root route for testing
+app.get("/", (req, res) => {
+  res.json({ message: "Sunam Bot API is running!" });
+});
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Keep-alive URL: https://chatbot-4ocx.onrender.com/ping`);
+});
