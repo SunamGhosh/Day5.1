@@ -186,43 +186,27 @@ function loadChat(q, r) {
 }
 
 // Call backend
-async function gemini(query) {
-  questionAsked.textContent = query;
-  responseText.textContent = "Thinking...";
-  responseContainer.classList.add('show');
-
+async function gemini(prompt) {
   try {
-    const response = await fetch('https://chatbot-4ocx.onrender.com/ask', {
+    const response = await fetch("https://sunambotgpt.onrender.com/gemini", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query }),
+      body: JSON.stringify({ prompt }),
     });
 
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
+    // Check for empty or invalid responses
     const text = await response.text();
-    if (!text.trim()) throw new Error("Empty response from server");
+    if (!text) throw new Error("Empty response from server");
 
     const data = JSON.parse(text);
-
-    const textResponse =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "No valid response received.";
-    
-    const formatted = textResponse
-      .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
-      .replace(/\*(.*?)\*/g, "<i>$1</i>")
-      .replace(/\n/g, "<br>");
-
-    responseText.innerHTML = formatted;
-    saveToHistory(query, formatted);
-  } catch (err) {
-    console.error("Error fetching Gemini API:", err);
-    const msg = "Error: Could not fetch response. Please try again.";
-    responseText.textContent = msg;
-    saveToHistory(query, msg);
+    console.log("Gemini response:", data);
+    return data.reply;
+  } catch (error) {
+    console.error("Error fetching Gemini API:", error);
+    return "Sorry, something went wrong. Please try again.";
   }
 }
+
 
 // Input events
 document.querySelector(".send-button").onclick = () => {
