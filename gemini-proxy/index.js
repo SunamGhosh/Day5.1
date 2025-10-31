@@ -32,6 +32,9 @@
 // });
 
 // app.listen(3000, () => console.log("Gemini api running on port 3000"));
+
+
+
 import express from "express";
 import bodyParser from "body-parser";
 import fetch from "node-fetch";
@@ -40,6 +43,7 @@ import dotenv from "dotenv";
 dotenv.config();
 const app = express();
 
+// Middlewares
 app.use(bodyParser.json());
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -47,13 +51,22 @@ app.use((req, res, next) => {
   next();
 });
 
+// Root route
 app.get("/", (req, res) => {
   res.send("🚀 Gemini Proxy is running successfully on Render!");
 });
+
+// Gemini API route
 app.post("/ask", async (req, res) => {
   const { query } = req.body;
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-  
+
+  // Safety check
+  if (!GEMINI_API_KEY) {
+    console.error("❌ Missing GEMINI_API_KEY in environment");
+    return res.status(500).json({ error: "Missing GEMINI_API_KEY in environment variables" });
+  }
+
   try {
     console.log("Incoming Query:", query);
 
@@ -68,21 +81,32 @@ app.post("/ask", async (req, res) => {
       }
     );
 
-    const text = await response.text(); // 👈 capture raw body first
-    console.log("Gemini raw response:", text);
+    const rawText = await response.text(); // Capture raw body first
+    console.log("Gemini raw response:", rawText);
 
-    if (!text) {
-      throw new Error("Empty response from Gemini API");
+    // Handle empty or invalid responses
+    if (!rawText || rawText.trim() === "") {
+      return res.status(500).json({ error: "Empty response from Gemini API" });
     }
 
-    const data = JSON.parse(text);
+    let data;
+    try {
+      data = JSON.parse(rawText);
+    } catch (err) {
+      console.error("❌ Invalid JSON from Gemini:", err.message);
+      return res.status(500).json({ error: "Invalid JSON format from Gemini API" });
+    }
+
     res.json(data);
   } catch (error) {
-    console.error("Gemini API Error:", error.message);
-    res.status(500).json({ error: "Error connecting to Gemini API", details: error.message });
+    console.error("❌ Gemini API Error:", error.message);
+    res.status(500).json({
+      error: "Error connecting to Gemini API",
+      details: error.message,
+    });
   }
 });
 
-
+// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));

@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sunam Bot</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -23,10 +21,6 @@
       flex-direction: column;
       align-items: center;
       padding: 12px 0;
-      overflow: visible;
-    }
-    .sidebar .logo {
-      margin-bottom: 14px;
     }
     .sidebar .icon {
       width: 40px;
@@ -35,14 +29,8 @@
       fill: #d1d5db;
       cursor: pointer;
       transition: fill 0.2s ease;
-      z-index: 10;
     }
-    .sidebar .icon:hover {
-      fill: #56a1f0;
-    }
-    .sidebar .icon.active {
-      fill: #56a1f0;
-    }
+    .sidebar .icon:hover, .sidebar .icon.active { fill: #56a1f0; }
     .main {
       flex: 1;
       display: flex;
@@ -57,7 +45,6 @@
       font-size: 13px;
       color: #6b7280;
       border-bottom: 1px solid #e5e7eb;
-      position: relative;
     }
     .header .notice {
       background: #e0e7ff;
@@ -65,7 +52,6 @@
       font-weight: 600;
       border-radius: 12px;
       padding: 4px 12px;
-      cursor: pointer;
       text-decoration: none;
     }
     .content {
@@ -76,153 +62,50 @@
       align-items: center;
       padding-bottom: 20px;
     }
-    .chat-container {
-      width: 100%;
-      max-width: 640px;
-      text-align: center;
-    }
-    .chat-container h1 {
-      font-weight: 400;
-      margin-bottom: 20px;
-    }
-    .history {
-      width: 100%;
-      max-width: 640px;
-      margin-bottom: 20px;
-      display: none;
-    }
-    .history.show {
-      display: block;
-    }
+    .history { display: none; max-width: 640px; width: 100%; margin-bottom: 20px; }
+    .history.show { display: block; }
     .history-item {
-      background: #fff;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #e5e7eb;
-      color: #111827;
-      margin-bottom: 10px;
-      cursor: pointer;
-      text-align: left;
+      background: #fff; padding: 12px; border-radius: 8px;
+      border: 1px solid #e5e7eb; margin-bottom: 10px; cursor: pointer;
     }
-    .history-item:hover {
-      background: #f9fafb;
-    }
-    .history-item .question {
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
-    .history-item .preview {
-      font-size: 14px;
-      color: #6b7280;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .response-container {
-      width: 100%;
-      max-width: 640px;
-      margin-bottom: 20px;
-      text-align: left;
-      display: none;
-    }
-    .response-container.show {
-      display: block;
-    }
-    .question-asked p {
-      font-weight: 600;
-      margin-bottom: 10px;
-      color: #111827;
-    }
+    .history-item:hover { background: #f9fafb; }
+    .question-asked p { font-weight: 600; color: #111827; }
     .response-text p {
-      background: #fff;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #e5e7eb;
-      color: #111827;
+      background: #fff; padding: 12px; border-radius: 8px;
+      border: 1px solid #e5e7eb; color: #111827;
     }
     .input-box {
-      display: flex;
-      border: 1px solid #d1d5db;
-      border-radius: 9999px;
-      background-color: #fff;
-      padding: 10px 16px;
-      max-width: 640px;
-      margin: 0 auto;
+      display: flex; border: 1px solid #d1d5db; border-radius: 9999px;
+      background-color: #fff; padding: 10px 16px; max-width: 640px;
     }
-    .input-box input[type="text"] {
-      flex: 1;
-      border: none;
-      outline: none;
-      font-size: 16px;
-      font-weight: 500;
-      color: #111827;
-      background: transparent;
+    .input-box input {
+      flex: 1; border: none; outline: none; font-size: 16px;
+      color: #111827; background: transparent;
     }
-    .input-box button {
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      margin-left: 12px;
-      fill: #6b7280;
-    }
-    .input-box button:hover svg {
-      fill: #2563eb;
-    }
+    .input-box button { background: transparent; border: none; cursor: pointer; }
   </style>
 </head>
 <body>
-  <nav class="sidebar" aria-label="Sidebar navigation">
-    <div class="logo" aria-label="ChatGPT Logo">
-      <svg class="icon" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-        <circle cx="12" cy="12" r="10" stroke="#2563eb" stroke-width="2" fill="none" />
-        <path d="M8 12l8-4v8l-8-4z" fill="#2563eb"/>
-      </svg>
-    </div>
-    <svg class="icon active" id="history-icon" viewBox="0 0 24 24" aria-label="History icon" role="img" focusable="false">
-      <path d="M6 2c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6H6zm4 10V6h4v2h-3v2h3v2h-3v2h3v2h-4v-6z" fill="#d1d5db"/>
-    </svg>
-    <svg class="icon" viewBox="0 0 24 24" aria-label="Compose icon" role="img" focusable="false">
-      <path d="M2 12l18 0" stroke="currentColor" stroke-width="2" />
-      <path d="M12 2l0 18" stroke="currentColor" stroke-width="2" />
-    </svg>
-    <svg class="icon" viewBox="0 0 24 24" aria-label="Search icon" role="img" focusable="false">
-      <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none" />
-      <line x1="16" y1="16" x2="22" y2="22" stroke="currentColor" stroke-width="2" />
-    </svg>
-    <svg class="icon" viewBox="0 0 24 24" aria-label="Images icon" role="img" focusable="false">
-      <circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="2" fill="none" />
-      <circle cx="9" cy="9" r="1" fill="currentColor" />
-      <path d="M4 15l3-3 2 2 3-4 5 5" stroke="currentColor" stroke-width="2" fill="none" />
+  <nav class="sidebar">
+    <svg class="icon active" id="history-icon" viewBox="0 0 24 24">
+      <path d="M6 2c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6H6zm4 10V6h4v2h-3v2h3v2h-3v2h3v2h-4v-6z"/>
     </svg>
   </nav>
   <main class="main">
     <header class="header">
-      <a href="#" class="notice" role="button" tabindex="0">Welcome to Sunam Bot</a>
+      <a href="#" class="notice">Welcome to Sunam Bot</a>
     </header>
     <section class="content">
-      <div class="history" id="history">
-        <!-- History items will be populated here -->
-      </div>
+      <div class="history" id="history"></div>
       <div class="response-container">
         <div class="question-asked"><p></p></div>
         <div class="response-text"><p></p></div>
       </div>
       <div class="chat-container">
         <h1>What can I help with?</h1>
-        <form class="input-box" role="search" aria-label="Chat input form">
-          <input type="text" class="ask" placeholder="Ask anything" aria-label="Chat input" />
-          <button type="button" aria-label="Voice input">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="#6b7280" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 14c1.656 0 3-1.344 3-3V7c0-1.657-1.344-3-3-3S9 5.343 9 7v4c0 1.656 1.344 3 3 3z" />
-              <path d="M19 11v2c0 2.757-2.243 5-5 5s-5-2.243-5-5v-2" />
-              <line x1="12" y1="19" x2="12" y2="23" stroke="#6b7280" stroke-width="2" />
-            </svg>
-          </button>
-          <button type="button" class="send-button" aria-label="Send">
-            <svg viewBox="0 0 24 24" width="30" height="30" fill="#6b7280" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 5l10 7-10 7V5z" />
-            </svg>
-          </button>
+        <form class="input-box" onsubmit="return false;">
+          <input type="text" class="ask" placeholder="Ask anything..." />
+          <button type="button" class="send-button">➤</button>
         </form>
       </div>
     </section>
