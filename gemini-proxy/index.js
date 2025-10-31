@@ -15,13 +15,21 @@ if (!API_KEY) {
   process.exit(1);
 }
 
-// YOUR /gemini ROUTE
+// /gemini ROUTE WITH LOGGING
 app.post("/gemini", async (req, res) => {
+  console.log("=== GEMINI ROUTE HIT! ===");
+  console.log("Prompt received:", req.body.prompt);
+
   try {
     const { prompt } = req.body;
-    if (!prompt) return res.status(400).json({ error: "Prompt is required" });
+    if (!prompt) {
+      console.log("ERROR: No prompt sent");
+      return res.status(400).json({ error: "Prompt is required" });
+    }
 
-    const response = await fetch(
+    console.log("Calling Gemini API with key:", API_KEY ? "SET" : "MISSING");
+    
+    const apiResponse = await fetch(
       `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
       {
         method: "POST",
@@ -32,34 +40,40 @@ app.post("/gemini", async (req, res) => {
       }
     );
 
-    if (!response.ok) {
-      const errorText = await response.text();
+    console.log("Gemini API status:", apiResponse.status);
+
+    if (!apiResponse.ok) {
+      const errorText = await apiResponse.text();
       console.error("Gemini API Error:", errorText);
-      return res.status(response.status).json({ error: "Gemini API error", details: errorText });
+      return res.status(apiResponse.status).json({ error: "Gemini API error", details: errorText });
     }
 
-    const data = await response.json();
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
+    const data = await apiResponse.json();
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response from Gemini";
+    console.log("Gemini reply length:", reply.length);
 
     res.json({ reply });
+    console.log("Response sent to client");
+
   } catch (err) {
     console.error("Server Error:", err);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error", details: err.message });
   }
 });
 
-// ADD THE /ping ROUTE HERE (after /gemini, before app.listen)
+// /ping route
 app.get("/ping", (req, res) => {
   res.json({ status: "alive", time: new Date().toISOString() });
 });
 
-// Optional: Add a root route for testing
+// Root route
 app.get("/", (req, res) => {
-  res.json({ message: "Sunam Bot API is running!" });
+  res.json({ message: "Sunam Bot API is running! Try POST /gemini" });
 });
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Keep-alive URL: https://chatbot-4ocx.onrender.com/ping`);
+  console.log(`API URL: https://chatbot-4ocx.onrender.com/gemini`);
+  console.log(`Ping URL: https://chatbot-4ocx.onrender.com/ping`);
 });
