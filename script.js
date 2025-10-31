@@ -187,23 +187,32 @@ function loadChat(q, r) {
 
 // Call backend
 async function gemini(prompt) {
+  questionAsked.textContent = prompt;
+  responseText.textContent = "Thinking...";
+  responseContainer.classList.add('show');
+
   try {
-    const response = await fetch("https://sunambotgpt.onrender.com/gemini", {
+    const res = await fetch("https://sunambotgpt.onrender.com/gemini", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt }),
     });
 
-    // Check for empty or invalid responses
-    const text = await response.text();
-    if (!text) throw new Error("Empty response from server");
+    const data = await res.json();
 
-    const data = JSON.parse(text);
-    console.log("Gemini response:", data);
-    return data.reply;
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
+    const formatted = formatResponse(data.reply);
+    responseText.innerHTML = formatted;
+    saveToHistory(prompt, formatted);
+
   } catch (error) {
-    console.error("Error fetching Gemini API:", error);
-    return "Sorry, something went wrong. Please try again.";
+    console.error(error);
+    const msg = "Error: Could not connect to Gemini. Check your backend.";
+    responseText.textContent = msg;
+    saveToHistory(prompt, msg);
   }
 }
 
