@@ -188,7 +188,7 @@ function loadChat(q, r) {
 // Call backend
 async function gemini(prompt) {
   try {
-    const response = await fetch("https://chatbot-4ocx.onrender.com//gemini", {
+    const response = await fetch("https://chatbot-4ocx.onrender.com/gemini", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt }),
